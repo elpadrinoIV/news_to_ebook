@@ -1,3 +1,5 @@
+import re
+
 def flatten_list(tree, elements):
     for elem in elements:
         flatten(tree, elem)
@@ -29,15 +31,31 @@ def flatten(tree, elem):
 
     elem.getparent().remove(elem)
 
+only_whitespace_regex = re.compile(r"^\s*$")
+def remove_empty(tree, **params):
+    for elem in tree.getchildren():
+        remove_empty(elem, **params)
+
+    if tree.getparent() is None:
+        return
+
+    if "ignore_whitespace" in params and params["ignore_whitespace"]:
+        if only_whitespace_regex.match(tree.text_content()):
+            remove_element(tree)
+    else:
+        if len(tree.text_content()) == 0:
+            remove_element(tree)
+    
+
 def remove_tag(tree, tag):
     for elem in tree.xpath(".//" + tag):
-        remove_element(tree, elem)
+        remove_element(elem)
 
-def remove_element(tree, elem):
+def remove_element(elem):
     elem_tail = elem.tail
     if elem_tail:
         prev_elem = elem.getprevious()
-        if prev_elem:
+        if prev_elem is not None:
             prev_tail = prev_elem.tail
             if not prev_tail:
                 prev_tail = ""
