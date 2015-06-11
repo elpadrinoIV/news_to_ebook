@@ -211,5 +211,31 @@ class XMLUtilsTest(unittest.TestCase):
         remove_empty(tree, ignore_whitespace=True)
         self.assertEqual(etree.tostring(tree), p_exp)
 
+    def test_keep_only_wanted(self):
+        p = '<a><b></b></a>'
+        p_exp = ['<a></a>', '<a/>']
+        wanted = ['a']
+
+        tree = html.fromstring(p)
+        keep_only_wanted(tree, wanted)
+        self.assertIn(etree.tostring(tree), p_exp)
+
+        p = '<a><b></b>AAA<b><c></c></b>BBB<b>CCC</b><c>DDD</c><b></b><b><c></c></b>EEE</b></a>'
+        p_exp = '<a>AAABBB<c>DDD</c>EEE</a>'
+        wanted = ['a', 'c']
+
+        tree = html.fromstring(p)
+        keep_only_wanted(tree, wanted)
+        self.assertEqual(etree.tostring(tree), p_exp)
+
+        p = '<a>AAA<d>BBB<b><c>CCC</c>DDD</b>EEE</d>FFF<b/><c/>GGG<b><c>HHH</c></b><c><d>III</d></c>JJJ</a>'
+        p_exp = '<a>AAA<d>BBBEEE</d>FFFGGGJJJ</a>'
+        wanted = ['a', 'd']
+
+        tree = html.fromstring(p)
+        keep_only_wanted(tree, wanted)
+        self.assertEqual(etree.tostring(tree), p_exp)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -10,7 +10,7 @@ def flatten(tree, elem):
         elem_tail = ""
 
     prev_elem = elem.getprevious()
-    if prev_elem:
+    if prev_elem is not None:
         # put tail on previous sibling's tail
         prev_tail = prev_elem.tail
         if not prev_tail:
@@ -45,6 +45,14 @@ def remove_empty(tree, **params):
     else:
         if len(tree.text_content()) == 0:
             remove_element(tree)
+
+def keep_only_wanted(tree, wanted):
+    for elem in tree.getchildren():
+        if elem.tag not in wanted:
+            remove_element(elem)
+        else:
+            keep_only_wanted(elem, wanted)
+
     
 
 def remove_tag(tree, tag):
