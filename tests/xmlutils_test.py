@@ -1,6 +1,6 @@
 import unittest
 
-from xmlutils import *
+from epubcreator.xmlutils import *
 from lxml import etree,html
 
 class XMLUtilsTest(unittest.TestCase):

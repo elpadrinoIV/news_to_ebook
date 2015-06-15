@@ -76,4 +76,11 @@ def remove_element(elem):
     
     elem.getparent().remove(elem)
 
+def remove_all_attributes(tree):
+    for key in tree.attrib.keys():
+        tree.attrib.pop(key)
+
+    for elem in tree.getchildren():
+        remove_all_attributes(elem)
+
     
